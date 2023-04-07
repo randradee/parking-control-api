@@ -64,17 +64,11 @@ public class ParkingSpotController {
         if (!parkingSpotModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking Spot not found");
         }
-        var parkingSpotModelToUpdate = parkingSpotModelOptional.get();
-        parkingSpotModelToUpdate.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
-        parkingSpotModelToUpdate.setParkingSpotNumber(parkingSpotDto.getParkingSpotNumber());
-        parkingSpotModelToUpdate.setLicensePlateCar(parkingSpotDto.getLicensePlateCar());
-        parkingSpotModelToUpdate.setBrandCar(parkingSpotDto.getBrandCar());
-        parkingSpotModelToUpdate.setModelCar(parkingSpotDto.getModelCar());
-        parkingSpotModelToUpdate.setColorCar(parkingSpotDto.getColorCar());
-        parkingSpotModelToUpdate.setResponsibleName(parkingSpotDto.getResponsibleName());
-        parkingSpotModelToUpdate.setApartment(parkingSpotDto.getApartment());
-        parkingSpotModelToUpdate.setBlock(parkingSpotDto.getBlock());
-        return ResponseEntity.status(HttpStatus.CREATED).body(parkingSpotService.save(parkingSpotModelToUpdate));
+        var parkingSpotModel = new ParkingSpotModel();
+        BeanUtils.copyProperties(parkingSpotDto, parkingSpotModel);
+        parkingSpotModel.setId(parkingSpotModelOptional.get().getId());
+        parkingSpotModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
+        return ResponseEntity.status(HttpStatus.CREATED).body(parkingSpotService.save(parkingSpotModel));
     }
 
     @DeleteMapping("/{id}")
